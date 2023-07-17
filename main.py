@@ -61,7 +61,7 @@ class Scraper:
         while True:
             self.driver.execute_script(
                 "document.querySelector('.sc-dwalKd.bKEtSx.sc-hUTmXr.hYvMzg').scrollTop = document.querySelector('.sc-dwalKd.bKEtSx.sc-hUTmXr.hYvMzg').scrollHeight")
-            time.sleep(10)
+            time.sleep(15)
             new_jobs = self.driver.find_elements(By.XPATH, '//div[@class="sc-dXsUDb iwLnYx relative"]')
             if len(new_jobs) == len(self.jobs):
                 break
@@ -83,16 +83,13 @@ class Scraper:
         print(f"Job links collected : {len(job_links)}")
 
         for i, job_link in enumerate(job_links):
-            self.driver.get(job_link)
-            self.wait.until(EC.url_to_be(job_link))
-            time.sleep(5)
             print(f"Job link {i}: ", job_link)
             self.driver.get(job_link)
             self.wait.until(EC.url_to_be(job_link))
             self.wait = WebDriverWait(self.driver, 10)
-            time.sleep(5)
+            time.sleep(15)
             try:
-                wait = WebDriverWait(self.driver, 10)
+                wait = WebDriverWait(self.driver, 15)
                 organization_element = wait.until(EC.presence_of_element_located((By.XPATH, './/p[@class="sc-ldMllC gUdPCj"]')))
                 organization = organization_element.text
             except NoSuchElementException:
@@ -168,4 +165,4 @@ class Scraper:
 
 if __name__ == '__main__':
     scraper = Scraper()
-    scraper.main('emailaddress', 'password!')
+    scraper.main('emailaddress', 'password')
