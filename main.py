@@ -168,5 +168,4 @@ class Scraper:
 
 if __name__ == '__main__':
     scraper = Scraper()
-    scraper.main('randy@napkinhealth.com', 'Cleanuponaisle6!')
-    # scraper.main('emailaddress', 'password!')
+    scraper.main('emailaddress', 'password!')
