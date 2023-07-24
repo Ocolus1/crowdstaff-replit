@@ -17,6 +17,21 @@ class Scraper:
         self.wait = WebDriverWait(self.driver, 10)
         self.jobs = []
         
+    def load_scraped_links(self):
+        if os.path.exists('sub_scraped_links.json'):
+            with open('sub_scraped_links.json', 'r') as f:
+                try:
+                    self.scraped_links = json.load(f)
+                except json.JSONDecodeError:
+                    self.scraped_links = []
+        else:
+            self.scraped_links = []
+
+
+    def save_scraped_links(self):
+        with open('sub_scraped_links.json', 'w') as f:
+            json.dump(self.scraped_links, f)
+        
     def login(self, username, password):
         self.driver.get('https://my.recruitifi.com/app/login')
         self.wait.until(EC.url_to_be('https://my.recruitifi.com/app/login'))
@@ -59,12 +74,22 @@ class Scraper:
             self.driver.get(url)
             self.wait.until(EC.url_to_be(url))
             self.wait = WebDriverWait(self.driver, 10)
+            if i == 2 :
+                break
             time.sleep(15)
             new_jobs = self.driver.find_elements(By.XPATH, f'//*[@data-cy="jobcast-card-active"]')  
             new_job = new_jobs[i]
             est_earnings = new_job.find_elements(By.XPATH, './/button')[3].text.split("\n")[0]
             new_job = self.driver.find_elements(By.XPATH, f'//*[@data-cy="jobcast-card-title"]')[i].click()
             time.sleep(10)
+            
+            # This is the code that skips repeat links
+            if self.driver.current_url in self.scraped_links:
+                print(f"Skipping number {i} : ", self.driver.current_url)
+                continue
+            self.scraped_links.append(self.driver.current_url)
+            ## This is the end of the code
+            
             organization = self.driver.find_elements(By.XPATH,'.//h5')[1].text
             jobpost_id = self.driver.find_elements(By.XPATH,'.//textarea')[0].text
             job_position = self.driver.find_elements(By.XPATH,'.//textarea')[2].text
@@ -129,12 +154,15 @@ class Scraper:
         df.to_csv(filename, index=False)
 
     def main(self, username, password):
+        self.load_scraped_links()
         self.login(username, password)
         self.navigate_to_jobs()
         self.scrape_jobs()
         job_info = self.extract_job_info()
         self.save_to_csv(job_info, 'jobs2.csv')
+        self.save_scraped_links()
 
 if __name__ == '__main__':
     scraper = Scraper()
-    scraper.main('emailaddress', 'password')
+    scraper.main('hello@napkinhealth.com', 'Cleanuponaisle6!')
+    # scraper.main('emailaddress', 'password')
