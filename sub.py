@@ -8,6 +8,7 @@ import pandas as pd
 import time
 import os
 import json
+import re
 
 class Scraper:
     def __init__(self):
@@ -74,8 +75,6 @@ class Scraper:
             self.driver.get(url)
             self.wait.until(EC.url_to_be(url))
             self.wait = WebDriverWait(self.driver, 10)
-            if i == 2 :
-                break
             time.sleep(15)
             new_jobs = self.driver.find_elements(By.XPATH, f'//*[@data-cy="jobcast-card-active"]')  
             new_job = new_jobs[i]
@@ -115,7 +114,8 @@ class Scraper:
             company_culture = self.driver.find_elements(By.XPATH,'.//div[@class="wysiwyg-text"]')[1].text
             divs = self.driver.find_elements(By.XPATH,'.//div[starts-with(@class, "checkbox-panel disabled checkbox-panel-checked-ie")]')
             benefits = " ".join([div.text for div in divs])
-            must_have = self.driver.find_elements(By.XPATH,'.//div[@class="page-card-form-section"]')[7].text
+            must = self.driver.find_elements(By.XPATH,'.//div[@class="page-card-form-section"]')[7].text
+            must_have = re.sub('\d+\n', '', must)
             
             job_info.append({
                 'organization': organization,
@@ -164,5 +164,4 @@ class Scraper:
 
 if __name__ == '__main__':
     scraper = Scraper()
-    scraper.main('hello@napkinhealth.com', 'Cleanuponaisle6!')
-    # scraper.main('emailaddress', 'password')
+    scraper.main('emailaddress', 'password')
