@@ -91,13 +91,16 @@ class Scraper:
             try:
                 wait = WebDriverWait(self.driver, 15)
                 organization_element = wait.until(EC.presence_of_element_located((By.XPATH, './/p[@class="sc-ldMllC gUdPCj"]')))
-                organization = organization_element.text
+                organization = organization_element.text or None
             except NoSuchElementException:
                 print(f"Could not find organization element for job link: {job_link}")
                 organization = None
-            job_position = self.driver.find_element(By.XPATH,'.//p[@class="sc-bLqSdX VuJyj"]').text
-            job_code = self.driver.find_element(By.XPATH,'.//p[@class="sc-kgDbTy hjUIEE"]').text
-            location = self.driver.find_element(By.XPATH,'.//p[@class="sc-ilsNdd hDiSpo"]/span[2]').text.split("in ")[1]
+            job_position = self.driver.find_element(By.XPATH,'.//p[@class="sc-bLqSdX VuJyj"]').text or None
+            job_code = self.driver.find_element(By.XPATH,'.//p[@class="sc-kgDbTy hjUIEE"]').text or None
+            try:
+                location = self.driver.find_element(By.XPATH,'.//p[@class="sc-ilsNdd hDiSpo"]/span[2]').text.split("in ")[1]
+            except:
+                location = None
             divs = self.driver.find_elements(By.XPATH,'.//div[@class="sc-jMWxgM kXMJoW wysiwyg-output"]')
             summary = "\n".join(divs[0].text.split('\n')) if len(divs) > 0 else ""
             roles_responsibilities = "\n".join(divs[1].text.split('\n')) if len(divs) > 1 else ""
@@ -165,4 +168,5 @@ class Scraper:
 
 if __name__ == '__main__':
     scraper = Scraper()
-    scraper.main('emailaddress', 'password')
+    scraper.main('randy@napkinhealth.com', 'Cleanuponaisle6!')
+    # randy@napkinhealth.com Pword: Cleanuponaisle6!
