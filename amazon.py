@@ -21,7 +21,7 @@ def generate_random_names(num=1):
     :param num: Number of names to generate.
     :return: List of names.
     """
-    return [names.get_full_name() for _ in range(num)]
+    return [names.get_first_name() for _ in range(num)]
 
 def select_month_year(driver, month, year, prefix):
     """
@@ -114,6 +114,7 @@ def main(search_date_from, search_date_to, num):
     csv_data = []
     
     # Assuming we're generating num random names for this example.
+    temp = 0
     for name in generate_random_names(num):
         # Input name into search field
         driver.find_element(By.ID, 'nameOrEmail').clear()
@@ -131,6 +132,10 @@ def main(search_date_from, search_date_to, num):
         time.sleep(8)
         
         csv_data, stored_data = extract_and_store(driver, stored_data, csv_data)
+        temp += 1
+        print(f"Completed {temp} name(s) out of {num}")
+        print(f"We have gotten {len(stored_data)} data entry")
+        print()
         
     # Save stored data
     with open(JSON_FILENAME, 'w') as json_file:
@@ -147,4 +152,4 @@ def main(search_date_from, search_date_to, num):
 
 if __name__ == "__main__":
     # main("from what time", "to what time", number of names to generate)
-    main("January 2024", "December 2024", 10)
+    main("January 2024", "December 2024", 5)
