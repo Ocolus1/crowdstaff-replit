@@ -57,10 +57,9 @@ def extract_table_data(driver, stored_data):
     for row in rows:
         name = row.find_element(By.XPATH, ".//td[contains(@id, 'owner')]/div/a").text
         partner = row.find_element(By.XPATH, ".//td[contains(@id, 'partner')]/div/span").text
-        date = row.find_element(By.XPATH, ".//td[contains(@id, 'date')]/div/span").text
         location = row.find_element(By.XPATH, ".//td[contains(@id, 'eventLocation')]/div/span").text
 
-        data_tuple = (name, partner, date, location)
+        data_tuple = (name, partner, location)
         if not any(data == data_tuple for data in stored_data):
             new_data.append(data_tuple)
             stored_data.append(data_tuple)
@@ -144,7 +143,7 @@ def main(search_date_from, search_date_to, num):
     # Save csv data
     with open(CSV_FILENAME, 'w', newline='') as csv_file:
         writer = csv.writer(csv_file)
-        writer.writerow(["Name", "Partner", "Date", "Event Location"])
+        writer.writerow(["Name", "Partner", "Event Location"])
         writer.writerows(csv_data)
 
     # Close the driver after the loop
@@ -152,4 +151,4 @@ def main(search_date_from, search_date_to, num):
 
 if __name__ == "__main__":
     # main("from what time", "to what time", number of names to generate)
-    main("January 2024", "December 2024", 5)
+    main("January 2024", "December 2024", 2)
