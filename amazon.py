@@ -61,8 +61,9 @@ def extract_table_data(driver, stored_data):
 
         data_tuple = (name, partner, location)
         if not any(data == data_tuple for data in stored_data):
-            new_data.append(data_tuple)
-            stored_data.append(data_tuple)
+            if location != "":
+                new_data.append(data_tuple)
+                stored_data.append(data_tuple)
 
     return new_data, stored_data
 
@@ -133,7 +134,7 @@ def main(search_date_from, search_date_to, num):
         csv_data, stored_data = extract_and_store(driver, stored_data, csv_data)
         temp += 1
         print(f"Completed {temp} name(s) out of {num}")
-        print(f"We have gotten {len(stored_data)} data entry")
+        print(f"We have gotten {len(csv_data)} data entry")
         print()
         
     # Save stored data
@@ -151,4 +152,4 @@ def main(search_date_from, search_date_to, num):
 
 if __name__ == "__main__":
     # main("from what time", "to what time", number of names to generate)
-    main("January 2024", "December 2024", 2)
+    main("January 2024", "December 2024", 3)
